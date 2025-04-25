@@ -27,7 +27,6 @@ func (r *ServicioRepository) CreateService(servicio *models.Servicio) error {
 		return result.Error
 	}
 	return nil
-
 }
 
 func (r *ServicioRepository) GetServiceById(Id uint) (*models.Servicio, error){
@@ -39,11 +38,10 @@ func (r *ServicioRepository) GetServiceById(Id uint) (*models.Servicio, error){
 
 func (r *ServicioRepository) GetServices() (*[]models.Servicio, error){
   var servicios []models.Servicio
-  result := r.Db.Find(servicios)
+  result := r.Db.Find(&servicios)
   if result.Error != nil{
     return nil,result.Error
   }
 
   return &servicios, nil
-
 }

@@ -12,13 +12,15 @@ import (
 func main() {
 	app, err := app.NewApp()
 	if err != nil {
+
+    app.Logger.Printf("error newApp: %v", err)
 		panic(err)
 	}
 
   app.Logger.Printf("Migrando db")
   app.Db.AutoMigrate(&models.Servicio{}, &models.Categoria{}, &models.Comentario{})
 
-	routes := router.InitRoutes()
+	routes := router.InitRoutes(app)
 
 	server := &http.Server{
 		Addr:         ":80",
