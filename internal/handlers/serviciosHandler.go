@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"strconv"
 
 	"fixable.com/fixable/internal/models"
 	"fixable.com/fixable/internal/repositories"
@@ -25,27 +24,12 @@ func NewServiceHandler(serviciosRepositorio repositories.IServicioRepository, ca
 
 func (h *ServicioHandler) CreateServicioHandler(w http.ResponseWriter, r *http.Request) {
 	var servicio models.Servicio
-	servicio.Nombre = r.FormValue("nombre")
-	servicio.Direccion = r.FormValue("direccion")
-	categoriastr := r.FormValue("categoria")
-	numstr := r.FormValue("telefono")
-	telefonoInt, err := strconv.ParseInt(numstr, 10, 64)
-  fmt.Println("Telefono: ",numstr)
+	err := servicio.FromForm(r)
 	if err != nil {
+		fmt.Println("%w", err)
 		utils.WriteResponse(w, http.StatusBadRequest, utils.Response{"error": err})
 		return
 	}
-
-	categoriaInt, err := strconv.ParseUint(categoriastr, 10, 32)
-	if err != nil {
-		utils.WriteResponse(w, http.StatusBadRequest, utils.Response{"error": err})
-		return
-	}
-	telefonoInt32 := int(telefonoInt)
-	servicio.Telefono = &telefonoInt32
-	servicio.CategoriaId = uint(categoriaInt)
-  fmt.Println("Categoria: ",servicio.CategoriaId)
-  fmt.Println("Telefono: ",servicio.Telefono)
 	err = servicio.Validate()
 	if err != nil {
 		fmt.Println("%w", err)
@@ -57,7 +41,7 @@ func (h *ServicioHandler) CreateServicioHandler(w http.ResponseWriter, r *http.R
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
 		return
 	}
-	fmt.Printf("%v", servicio)
+	http.Redirect(w, r, "/servicios/all", http.StatusSeeOther)
 }
 
 func (h *ServicioHandler) NewServicio(w http.ResponseWriter, r *http.Request) {
@@ -85,13 +69,31 @@ func (h *ServicioHandler) GetAllServicios(w http.ResponseWriter, r *http.Request
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
 		return
 	}
+	categorias, err := h._categoriaRepository.GetCategorias()
+	if err != nil {
+		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
+		return
+	}
 
-	t, err := template.ParseFiles("internal/templates/base.template", "internal/templates/servicios/home.template")
+	t, err := template.ParseFiles(
+		"internal/templates/base.template",
+		"internal/templates/servicios/home.template",
+		"internal/templates/categorias/list.template",
+	)
+
 	if err != nil {
 		panic(err)
 	}
 
-	err = t.Execute(w, services)
+	data := struct {
+		Servicios  []models.Servicio
+		Categorias []models.Categoria
+	}{
+		Servicios:  *services,
+		Categorias: *categorias,
+	}
+
+	err = t.Execute(w, data)
 	if err != nil {
 		panic(err)
 	}

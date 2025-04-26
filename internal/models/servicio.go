@@ -2,6 +2,9 @@ package models
 
 import (
 	"errors"
+	"html/template"
+	"net/http"
+	"strconv"
 	"strings"
 
 	"gorm.io/gorm"
@@ -9,11 +12,12 @@ import (
 
 type Servicio struct {
 	gorm.Model
-	Nombre      string `json:"nombre"`
-	Direccion   string `json:"direccion"`
-	Email       string `json:"email"`
-	Telefono    *int   `json:"telefono"`
-	CategoriaId uint   `json:"categoriaId"`
+	Nombre      string 
+	Direccion   string
+	Email       string
+	Telefono    *int 
+	CategoriaId uint
+  Contenido template.HTML
 }
 
 func (s *Servicio) Validate() error {
@@ -30,4 +34,26 @@ func (s *Servicio) Validate() error {
 		return errors.New("Categoria no puede estar vario")
 	}
 	return nil
+}
+
+func (s *Servicio) FromForm(r *http.Request) error {
+
+	s.Nombre = r.FormValue("nombre")
+	s.Direccion = r.FormValue("direccion")
+	categoriastr := r.FormValue("categoria")
+	numstr := r.FormValue("telefono")
+  content := r.FormValue("contenido")
+	telefonoInt, err := strconv.Atoi(numstr)
+	if err != nil {
+		return err
+	}
+
+	categoriaInt, err := strconv.Atoi(categoriastr)
+	if err != nil {
+		return err
+	}
+  s.Contenido = template.HTML(content)
+	s.Telefono = &telefonoInt
+	s.CategoriaId = uint(categoriaInt)
+  return nil
 }

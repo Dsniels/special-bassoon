@@ -1,0 +1,10 @@
+{{define "categorias-list"}}
+{{range .Categorias}}
+<div>
+    <a href="/categoria/{{.ID}}">{{.Nombre}}</a>
+</div>
+{{end}}
+<p>
+    <a href="/categoria/create">Create new categoria</a>
+</p>
+{{end}}

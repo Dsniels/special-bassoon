@@ -37,7 +37,7 @@ func (h *CategoriaHandler) CreateCategoriaHandler(w http.ResponseWriter, r *http
 		return
 	}
 
-  http.Redirect(w,r,"/categoria/create", http.StatusOK)
+	http.Redirect(w, r, "/servicios/all", http.StatusSeeOther)
 
 }
 
