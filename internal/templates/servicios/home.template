@@ -1,0 +1,15 @@
+{{define "title"}}All articles{{end}}
+{{define "scripts"}}{{end}}
+{{define "body"}}
+{{if eq (len .) 0}}
+Nothing to see here
+{{end}}
+{{range .}}
+<div>
+    <a href="/servicios/{{.ID}}">{{.Nombre}}</a>
+</div>
+{{end}}
+<p>
+  <a href="/servicios/create">Crear nuevo servicio</a>
+</p>
+{{end}}

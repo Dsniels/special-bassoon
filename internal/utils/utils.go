@@ -11,6 +11,7 @@ import (
 
 type Response map[string]any
 
+
 func WriteResponse(w http.ResponseWriter, statusCode int, data Response) error {
   dataResponse, err:= json.MarshalIndent(data, "", " ")
   if err != nil{

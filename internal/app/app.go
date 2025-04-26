@@ -13,6 +13,7 @@ import (
 type App struct {
 	Db *gorm.DB
   ServicioHandler *handler.ServicioHandler
+  CategoriaHandler *handler.CategoriaHandler
   Logger *log.Logger
 }
 
@@ -20,7 +21,9 @@ func NewApp() (*App, error) {
 	db, err := config.ConnectDb()
   logger := log.New(os.Stdout, "",log.Ldate|log.Ltime)
   servicioRepository := repositories.NewServicioRepository(db)
-  servicioHandler := handler.NewServiceHandler(servicioRepository)
+  categoriaRepository := repositories.NewCategoriaRepository(db)
+  servicioHandler := handler.NewServiceHandler(servicioRepository, categoriaRepository)
+  categoriaHandler := handler.NewCategoriaHandler(categoriaRepository)
 	if err != nil {
 		return nil, err
 	}
@@ -29,6 +32,7 @@ func NewApp() (*App, error) {
 		Db: db,
     Logger: logger,
     ServicioHandler: servicioHandler,
+    CategoriaHandler: categoriaHandler,
 	}, nil
 
 }
