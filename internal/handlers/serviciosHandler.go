@@ -11,14 +11,20 @@ import (
 )
 
 type ServicioHandler struct {
-	_servicioRepository  repositories.IServicioRepository
-	_categoriaRepository repositories.ICategoriaRepository
+	_servicioRepository   repositories.IServicioRepository
+	_categoriaRepository  repositories.ICategoriaRepository
+	_comentarioRepository repositories.IComentarioRepository
 }
 
-func NewServiceHandler(serviciosRepositorio repositories.IServicioRepository, categoriaRepository repositories.ICategoriaRepository) *ServicioHandler {
+func NewServiceHandler(
+	serviciosRepositorio repositories.IServicioRepository,
+	comentarioRepository repositories.IComentarioRepository,
+	categoriaRepository repositories.ICategoriaRepository,
+) *ServicioHandler {
 	return &ServicioHandler{
-		_categoriaRepository: categoriaRepository,
-		_servicioRepository:  serviciosRepositorio,
+		_categoriaRepository:  categoriaRepository,
+		_comentarioRepository: comentarioRepository,
+		_servicioRepository:   serviciosRepositorio,
 	}
 }
 
@@ -45,7 +51,11 @@ func (h *ServicioHandler) CreateServicioHandler(w http.ResponseWriter, r *http.R
 }
 
 func (h *ServicioHandler) NewServicio(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("internal/templates/base.template", "internal/templates/servicios/create.template")
+	t, err := template.ParseFiles(
+		"internal/templates/base.template",
+		"internal/templates/navbar/navbar.template",
+		"internal/templates/servicios/create.template",
+	)
 	if err != nil {
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
 		return
@@ -69,6 +79,11 @@ func (h *ServicioHandler) GetAllServicios(w http.ResponseWriter, r *http.Request
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
 		return
 	}
+	comentarios, err := h._comentarioRepository.GetAllComentarios()
+	if err != nil {
+		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
+		return
+	}
 	categorias, err := h._categoriaRepository.GetCategorias()
 	if err != nil {
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
@@ -77,8 +92,10 @@ func (h *ServicioHandler) GetAllServicios(w http.ResponseWriter, r *http.Request
 
 	t, err := template.ParseFiles(
 		"internal/templates/base.template",
+		"internal/templates/navbar/navbar.template",
 		"internal/templates/servicios/home.template",
 		"internal/templates/categorias/list.template",
+		"internal/templates/comentarios/comentarios-list.template",
 	)
 
 	if err != nil {
@@ -86,11 +103,13 @@ func (h *ServicioHandler) GetAllServicios(w http.ResponseWriter, r *http.Request
 	}
 
 	data := struct {
-		Servicios  []models.Servicio
-		Categorias []models.Categoria
+		Servicios   []models.Servicio
+		Categorias  []models.Categoria
+		Comentarios []models.Comentario
 	}{
-		Servicios:  *services,
-		Categorias: *categorias,
+		Comentarios: *comentarios,
+		Servicios:   *services,
+		Categorias:  *categorias,
 	}
 
 	err = t.Execute(w, data)
@@ -106,9 +125,27 @@ func (h *ServicioHandler) GetServicioById(w http.ResponseWriter, r *http.Request
 		return
 	}
 	servicio, err := h._servicioRepository.GetServiceById(id)
+	if err != nil {
+		utils.WriteResponse(w, http.StatusBadRequest, utils.Response{"error": err})
+		return
+	}
+	t, err := template.ParseFiles(
+		"internal/templates/base.template",
+		"internal/templates/navbar/navbar.template",
+		"internal/templates/servicios/servicio.template",
+	)
+	if err != nil {
+		panic(err)
+	}
+	data := struct {
+		Servicio models.Servicio
+	}{
+		Servicio: *servicio,
+	}
 
-	utils.WriteResponse(w, http.StatusOK, utils.Response{"data": servicio})
-
-	return
+	err = t.Execute(w, data)
+	if err != nil {
+		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
+	}
 
 }

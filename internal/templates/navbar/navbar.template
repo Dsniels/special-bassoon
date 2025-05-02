@@ -1,0 +1,25 @@
+{{define "navbar"}}
+<nav class="w-full bg-gray-100 py-3 px-6 flex items-center justify-between shadow-sm">
+  <div class="flex items-center">
+    <div class="ml-2">
+      <a href="/servicios/all">
+      <h1 class="text-green-900 font-bold text-2xl leading-tight">Fixable</h1>
+      <p class="text-green-900 font-medium">¡BIENVENIDO!</p>
+      </a>
+    </div>
+  </div>
+  
+  <div class="relative flex items-center w-full max-w-lg mx-6">
+    <div class="absolute left-3 text-gray-400">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+      </svg>
+    </div>
+    <input type="text" placeholder="¿Qué servicio necesitas?" class="w-full pl-10 pr-4 py-2 rounded-full border-none focus:outline-none">
+  </div>
+  
+  <a href="/promocionate" class="bg-green-900 hover:bg-green-800 text-white text-center text-sm px-3 py-2 rounded-md font-semibold uppercase  whitespace-nowrap">
+    Promocionate<br>con nosotros
+  </a>
+</nav>
+{{end}}

@@ -12,13 +12,12 @@ import (
 func main() {
 	app, err := app.NewApp()
 	if err != nil {
-
-    app.Logger.Printf("error newApp: %v", err)
+		app.Logger.Printf("error newApp: %v", err)
 		panic(err)
 	}
 
-  app.Logger.Printf("Migrando db")
-  app.Db.AutoMigrate(&models.Servicio{}, &models.Categoria{}, &models.Comentario{})
+	app.Logger.Printf("Migrando db")
+	app.Db.AutoMigrate(&models.Servicio{}, &models.Categoria{}, &models.Comentario{})
 
 	routes := router.InitRoutes(app)
 
@@ -33,5 +32,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-  app.Logger.Printf("Todo listo")
+	app.Logger.Printf("Todo listo")
 }

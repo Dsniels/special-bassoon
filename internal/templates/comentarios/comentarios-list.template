@@ -1,0 +1,14 @@
+{{define "comentarios"}}
+{{if eq (len .Comentarios) 0}}
+Nothing to see here
+{{end}}
+{{range .Comentarios}}
+<div>
+    <p>{{.Comentario}}</p>
+</div>
+{{end}}
+<form method="post" action="/comentarios/create">
+    <input id="comentario" type="text" name="comentario" placeholder="comentario">
+       <button id="submit" type="submit">Enviar</button>
+</form>
+{{end}}

@@ -12,12 +12,12 @@ import (
 
 type Servicio struct {
 	gorm.Model
-	Nombre      string 
+	Nombre      string
 	Direccion   string
 	Email       string
-	Telefono    *int 
+	Telefono    *int
 	CategoriaId uint
-  Contenido template.HTML
+	Contenido   template.HTML
 }
 
 func (s *Servicio) Validate() error {
@@ -42,7 +42,7 @@ func (s *Servicio) FromForm(r *http.Request) error {
 	s.Direccion = r.FormValue("direccion")
 	categoriastr := r.FormValue("categoria")
 	numstr := r.FormValue("telefono")
-  content := r.FormValue("contenido")
+	content := r.FormValue("contenido")
 	telefonoInt, err := strconv.Atoi(numstr)
 	if err != nil {
 		return err
@@ -52,8 +52,8 @@ func (s *Servicio) FromForm(r *http.Request) error {
 	if err != nil {
 		return err
 	}
-  s.Contenido = template.HTML(content)
+	s.Contenido = template.HTML(content)
 	s.Telefono = &telefonoInt
 	s.CategoriaId = uint(categoriaInt)
-  return nil
+	return nil
 }

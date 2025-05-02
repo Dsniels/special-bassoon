@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>{{ template "title" . }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   {{ template "scripts" }}
 </head>
+
 <body>
+{{template "navbar" .}}
 {{ template "body" . }}
 </body>
 </html>

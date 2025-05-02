@@ -1,16 +1,41 @@
-{{define "title"}}All articles{{end}}
+{{define "title"}}Servicios Disponibles{{end}}
 {{define "scripts"}}{{end}}
 {{define "body"}}
-{{template "categorias-list" .}}
-{{if eq (len .Servicios) 0}}
-Nothing to see here
-{{end}}
-{{range .Servicios}}
-<div>
-    <a href="/servicios/{{.ID}}">{{.Nombre}}</a>
-</div>
-{{end}}
-<p>
-  <a href="/servicios/create">Crear nuevo servicio</a>
-</p>
+  {{template "categorias-list" .}}
+  
+  <div class="container mx-auto px-4 py-8">
+    <h2 class="text-3xl font-bold text-green-900 mb-6">Recomendación</h2>
+    
+    {{if eq (len .Servicios) 0}}
+      <div class="text-center py-10 text-gray-600">
+        No hay servicios disponibles
+      </div>
+    {{else}}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {{range .Servicios}}
+        <div class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+          <div class="h-48 overflow-hidden">
+            <img src="/static/images/service-default.jpg" alt="{{.Nombre}}" class="w-full h-full object-cover">
+          </div>
+          
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-center uppercase mb-4">{{.Nombre}}</h3>
+            <div class="flex items-center text-gray-700">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span>{{.Direccion}}</span>
+            </div>
+          </div>
+          
+          <a href="/servicios/{{.ID}}" >{{.Nombre}}</a>
+        </div>
+        {{end}}
+      </div>
+    {{end}}
+  </div>
+  
+  <!-- Sección de comentarios -->
+  {{template "comentarios" .}}
 {{end}}

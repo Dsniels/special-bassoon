@@ -1,0 +1,35 @@
+{{define "title"}} {{.Categoria}} {{end}}
+{{define "scripts"}}{{end}}
+{{define "body"}}
+
+<div class="bg-gray-100 py-8 mb-6">
+  <h1 class="text-4xl font-bold text-center text-green-900">{{.Categoria}}</h1>
+</div>
+
+<div class="container mx-auto px-4 mb-10">
+  {{if eq (len .Servicios) 0}}
+  <div class="text-center py-10 text-gray-600">
+    No hay servicios disponibles en esta categoría
+  </div>
+  {{end}}
+  <div class="divide-y divide-gray-300">
+    {{range .Servicios}}
+    <div class="py-4 flex items-center">
+      <div class="mr-4 flex-shrink-0">
+        <img src="/static/images/service-default.jpg" alt="{{.Nombre}}" class="w-24 h-24 object-cover border border-gray-300">
+      </div>
+      <div>
+        <a href="/servicios/{{.ID}}" class="text-xl font-bold text-green-900 hover:text-green-700">{{.Nombre}}</a>
+        <p class="text-gray-600">12 reseñas</p>
+      </div>
+    </div>
+    {{end}}
+  </div>
+
+  <div class="mt-8 text-center">
+    <a href="/servicios/create" class="bg-green-900 hover:bg-green-800 text-white py-2 px-6 rounded-md font-medium">
+      Añadir nuevo servicio
+    </a>
+  </div>
+</div>
+{{end}}

@@ -1,28 +1,30 @@
 package repositories
 
 import (
+
 	"fixable.com/fixable/internal/models"
 	"gorm.io/gorm"
 )
 
 type ServicioRepository struct {
-	Db *gorm.DB
+	db *gorm.DB
 }
 
 type IServicioRepository interface {
 	CreateService(*models.Servicio) error
+  GetServiceByCategoriaId(uint) (*[]models.Servicio, error)
 	GetServices() (*[]models.Servicio, error)
 	GetServiceById(uint) (*models.Servicio, error)
 }
 
 func NewServicioRepository(db *gorm.DB) *ServicioRepository {
 	return &ServicioRepository{
-		Db: db,
+		db: db,
 	}
 }
 
 func (r *ServicioRepository) CreateService(servicio *models.Servicio) error {
-	result := r.Db.Create(&servicio)
+	result := r.db.Create(&servicio)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -31,14 +33,24 @@ func (r *ServicioRepository) CreateService(servicio *models.Servicio) error {
 
 func (r *ServicioRepository) GetServiceById(Id uint) (*models.Servicio, error){
   var servicio = models.Servicio{Model: gorm.Model{ID: Id}}
-  r.Db.First(&servicio)
+  r.db.First(&servicio)
   return &servicio, nil
 
 }
 
+func(r *ServicioRepository) GetServiceByCategoriaId( id uint) (*[]models.Servicio, error){
+  var servicios []models.Servicio 
+  result := r.db.Where("categoria_id = ?", id).Find(&servicios)
+  if result.Error != nil{
+    return nil, result.Error
+  }
+ 
+  return &servicios , nil
+}
+
 func (r *ServicioRepository) GetServices() (*[]models.Servicio, error){
   var servicios []models.Servicio
-  result := r.Db.Find(&servicios)
+  result := r.db.Find(&servicios)
   if result.Error != nil{
     return nil,result.Error
   }

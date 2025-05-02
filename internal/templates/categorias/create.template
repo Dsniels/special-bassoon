@@ -5,7 +5,6 @@
            </script>
 {{end}}
 {{define "body"}}
-<h1>Create a new article</h1>
 <form method="post" action="/categoria/create">
     <input id="nombre" type="text" name="nombre" placeholder="nombre">
        <button id="submit" type="submit">Create</button>
