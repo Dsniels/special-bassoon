@@ -24,9 +24,9 @@ func NewApp() (*App, error) {
 	servicioRepository := repositories.NewServicioRepository(db)
 	categoriaRepository := repositories.NewCategoriaRepository(db)
 	comentarioRepository := repositories.NewComentarioRepository(db)
-	comentarioHandler := handler.NewComentariosHandler(comentarioRepository)
+	comentarioHandler := handler.NewComentariosHandler(comentarioRepository, servicioRepository)
 	servicioHandler := handler.NewServiceHandler(servicioRepository, comentarioRepository, categoriaRepository)
-	categoriaHandler := handler.NewCategoriaHandler(categoriaRepository,servicioRepository)
+	categoriaHandler := handler.NewCategoriaHandler(categoriaRepository, servicioRepository)
 	if err != nil {
 		return nil, err
 	}

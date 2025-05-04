@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"fixable.com/fixable/internal/app"
-	"fixable.com/fixable/internal/models"
+	"fixable.com/fixable/internal/data"
 	"fixable.com/fixable/internal/router"
 )
 
@@ -17,12 +17,11 @@ func main() {
 	}
 
 	app.Logger.Printf("Migrando db")
-	app.Db.AutoMigrate(&models.Servicio{}, &models.Categoria{}, &models.Comentario{})
-
+  data.SeedData(app.Db)
 	routes := router.InitRoutes(app)
 
 	server := &http.Server{
-		Addr:         ":80",
+		Addr:         ":8000",
 		Handler:      routes,
 		WriteTimeout: time.Second * 5,
 		ReadTimeout:  time.Second * 5,

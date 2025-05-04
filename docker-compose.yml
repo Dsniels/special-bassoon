@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql-go
+    ports:
+      - "1433:1433"
+    volumes:
+      - go-database:/var/opt/database
+    environment:
+      - env_var=env_value
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Contraseñña1
+      - MSSQL_PID=Express
+    networks:
+      - go-network
+      
+  server:
+    image: danielszr/go-project
+    ports:
+      - "8000:8000"
+    depends_on:
+      - "database"
+    networks:
+      - go-network
+
+networks:
+  go-network:
+    driver: bridge
+
+volumes:
+  go-database:

@@ -95,7 +95,6 @@ func (h *ServicioHandler) GetAllServicios(w http.ResponseWriter, r *http.Request
 		"internal/templates/navbar/navbar.template",
 		"internal/templates/servicios/home.template",
 		"internal/templates/categorias/list.template",
-		"internal/templates/comentarios/comentarios-list.template",
 	)
 
 	if err != nil {

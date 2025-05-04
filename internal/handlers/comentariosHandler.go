@@ -11,39 +11,48 @@ import (
 
 type ComentariosHandler struct {
 	_comentariosRepository repositories.IComentarioRepository
+	_serviciosRepository   repositories.IServicioRepository
 }
 
 func NewComentariosHandler(
 	comentariosRepository repositories.IComentarioRepository,
+	serviciosRepository repositories.IServicioRepository,
 ) *ComentariosHandler {
 
-	return &ComentariosHandler{ 
+	return &ComentariosHandler{
 		_comentariosRepository: comentariosRepository,
+		_serviciosRepository:   serviciosRepository,
 	}
-}
-
-func (h *ComentariosHandler) prepareData() (any, error) {
-	comentarios, err := h._comentariosRepository.GetAllComentarios()
-	if err != nil {
-		return nil, err
-	}
-	return struct {
-		Comentarios []models.Comentario
-	}{
-		Comentarios: *comentarios,
-	}, nil
-
 }
 
 func (h *ComentariosHandler) ShowComentarios(w http.ResponseWriter, r *http.Request) {
-	data, err := h.prepareData()
+	servicioId, err := utils.GetIdFromParams(r)
 	if err != nil {
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
 		return
 	}
+	servicio, err := h._serviciosRepository.GetServiceById(servicioId)
+	if err != nil {
+		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
+		return
+	}
+	comentarios, err := h._comentariosRepository.GetComentariosPorServicioId(int(servicioId))
+	if err != nil {
+		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
+		return
+	}
+
+	data := struct {
+		Comentarios []models.Comentario
+		Servicio    *models.Servicio
+	}{
+		Comentarios: *comentarios,
+		Servicio:    servicio,
+	}
+
 	t, err := template.ParseFiles(
 		"internal/templates/base.template",
-		"internal/templates/navbar/base.template", 
+		"internal/templates/navbar/navbar.template",
 		"internal/templates/comentarios/comentarios-list.template")
 	if err != nil {
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
@@ -54,12 +63,22 @@ func (h *ComentariosHandler) ShowComentarios(w http.ResponseWriter, r *http.Requ
 
 func (h *ComentariosHandler) CreateComentarioHandler(w http.ResponseWriter, r *http.Request) {
 	var comentario models.Comentario
-	comentario.Comentario = r.FormValue("comentario")
-	err := h._comentariosRepository.CreateComentario(&comentario)
+	servicioId, err := utils.GetIdFromParams(r)
 	if err != nil {
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
 		return
 	}
-	http.Redirect(w, r, "/servicios/all", http.StatusSeeOther)
+	comentario.Comentario = r.FormValue("comentario")
+	comentario.ServicioId = servicioId
+	err = h._comentariosRepository.CreateComentario(&comentario)
+	if err != nil {
+		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
+		return
+	}
+	utils.WriteResponse(w, http.StatusOK, utils.Response{
+        "message": "Comentario creado exitosamente",
+        "comentario": comentario,
+    })
+	return
 
 }

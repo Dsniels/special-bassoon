@@ -12,6 +12,7 @@ type ComentarioRepository struct {
 type IComentarioRepository interface {
 	CreateComentario(*models.Comentario) error
 	GetAllComentarios() (*[]models.Comentario, error)
+  GetComentariosPorServicioId(servicioId int) (*[]models.Comentario, error)
 }
 
 func NewComentarioRepository(db *gorm.DB) *ComentarioRepository {
@@ -26,6 +27,16 @@ func (repo *ComentarioRepository) CreateComentario(comentario *models.Comentario
     return result.Error
   }
 	return nil
+}
+
+func (repo *ComentarioRepository) GetComentariosPorServicioId(servicioId int) (*[]models.Comentario, error){
+  var comentarios []models.Comentario
+  results := repo.db.Where("servicio_Id = ?", servicioId).Find(&comentarios)
+  if results.Error != nil{
+    return nil, results.Error
+  }
+  return &comentarios, nil
+
 }
 
 func (repo *ComentarioRepository) GetAllComentarios()(*[]models.Comentario, error){
