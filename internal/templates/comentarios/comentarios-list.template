@@ -1,14 +1,89 @@
-{{define "comentarios"}}
-{{if eq (len .Comentarios) 0}}
-Nothing to see here
+{{define "title"}}Comentarios - {{.Servicio.Nombre}}{{end}}
+
+{{define "scripts"}}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('commentForm');
+    const commentsContainer = document.querySelector('.md\\:col-span-2');
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const servicioId = form.dataset.servicioId;
+
+        try {
+            const response = await fetch(`/comentarios/create/${servicioId}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                form.reset();
+                
+                const refreshResponse = await fetch(window.location.pathname);
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(await refreshResponse.text(), 'text/html');
+                const newComments = doc.querySelector('.md\\:col-span-2');
+                
+                if (newComments) {
+                    commentsContainer.innerHTML = newComments.innerHTML;
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+});
+</script>
 {{end}}
-{{range .Comentarios}}
-<div>
-    <p>{{.Comentario}}</p>
+{{define "body"}}
+<div class="container mx-auto px-4 py-8">
+  <h2 class="text-4xl font-bold text-center text-green-900 mb-12">Cuentanos tu experiencia!</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="md:col-span-2 space-y-6">
+      {{if eq (len .Comentarios) 0}}
+      <div class="text-center text-gray-500">
+        No hay comentarios aun. 
+      </div>
+      {{else}}
+        {{range .Comentarios}}
+        <div class="flex space-x-4">
+          <div class="flex-shrink-0">
+            <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+              <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+          </div>
+          <div class="flex-grow bg-white rounded-lg p-6 shadow-sm">
+            <p class="text-gray-700 text-lg">{{.Comentario}}</p>
+          </div>
+        </div>
+        {{end}}
+      {{end}}
+    </div>
+
+    <div class="md:col-span-1">
+      <div class="sticky top-4 bg-gray-50 rounded-lg p-6">
+        <h3 class="text-2xl font-bold text-green-900 text-center mb-6">Cuentanos tu experiencia con este servicio</h3>
+        <form id="commentForm" data-servicio-id="{{.Servicio.ID}}" class="space-y-4">
+          <textarea 
+            id="comentario" 
+            name="comentario" 
+            rows="4" 
+            class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
+            placeholder="Dejanos tu opinion!"></textarea>
+          <div class="text-right">
+            <button 
+              type="submit" 
+              class="bg-green-900 text-white px-6 py-2 rounded-lg hover:bg-green-800 transition-colors">
+              Enviar comentario
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
-{{end}}
-<form method="post" action="/comentarios/create">
-    <input id="comentario" type="text" name="comentario" placeholder="comentario">
-       <button id="submit" type="submit">Enviar</button>
-</form>
 {{end}}

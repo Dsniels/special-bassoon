@@ -4,7 +4,7 @@
   {{template "categorias-list" .}}
   
   <div class="container mx-auto px-4 py-8">
-    <h2 class="text-3xl font-bold text-green-900 mb-6">Recomendación</h2>
+    <h2 class="text-3xl font-bold text-green-900 mb-6">Recomendaciones</h2>
     
     {{if eq (len .Servicios) 0}}
       <div class="text-center py-10 text-gray-600">
@@ -15,7 +15,10 @@
         {{range .Servicios}}
         <div class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
           <div class="h-48 overflow-hidden">
-            <img src="/static/images/service-default.jpg" alt="{{.Nombre}}" class="w-full h-full object-cover">
+      <a href="/servicios/{{.ID}}" >
+            <img src="{{.Imagen}}" alt="{{.Nombre}}" class="w-full h-full object-cover">
+
+          </a>
           </div>
           
           <div class="p-6">
@@ -28,14 +31,10 @@
               <span>{{.Direccion}}</span>
             </div>
           </div>
-          
-          <a href="/servicios/{{.ID}}" >{{.Nombre}}</a>
         </div>
         {{end}}
       </div>
     {{end}}
   </div>
   
-  <!-- Sección de comentarios -->
-  {{template "comentarios" .}}
 {{end}}
