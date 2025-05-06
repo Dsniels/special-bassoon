@@ -12,11 +12,13 @@ func InitRoutes(app *app.App) *chi.Mux {
 	files := http.FileServer(http.Dir("internal/images"))
 	router.Handle("/images/*",http.StripPrefix("/images/",files))
 	router.Get("/", app.ServicioHandler.GetAllServicios)
+	router.Get("/promocionarse", app.ServicioHandler.PromocionarseHandler )
 
 	router.Route("/servicios", func(r chi.Router) {
 		r.Get("/create", app.ServicioHandler.NewServicio)
 		r.Post("/create", app.ServicioHandler.CreateServicioHandler)
 		r.Get("/all", app.ServicioHandler.GetAllServicios)
+		r.Get("/search", app.ServicioHandler.SearchHandler)
 		r.Get("/{id}", app.ServicioHandler.GetServicioById)
 	})
 	router.Route("/categoria", func(r chi.Router) {

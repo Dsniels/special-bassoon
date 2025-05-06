@@ -5,23 +5,23 @@ import (
 	"net/http"
 
 	"fixable.com/fixable/internal/models"
-	"fixable.com/fixable/internal/repositories"
+	"fixable.com/fixable/internal/storage"
 	"fixable.com/fixable/internal/utils"
 )
 
 type ComentariosHandler struct {
-	_comentariosRepository repositories.IComentarioRepository
-	_serviciosRepository   repositories.IServicioRepository
+	_comentariosStorage storage.IComentarioStorage
+	_serviciosStorage   storage.IServicioStorage
 }
 
 func NewComentariosHandler(
-	comentariosRepository repositories.IComentarioRepository,
-	serviciosRepository repositories.IServicioRepository,
+	comentariosStorage storage.IComentarioStorage,
+	serviciosStorage storage.IServicioStorage,
 ) *ComentariosHandler {
 
 	return &ComentariosHandler{
-		_comentariosRepository: comentariosRepository,
-		_serviciosRepository:   serviciosRepository,
+		_comentariosStorage: comentariosStorage,
+		_serviciosStorage:   serviciosStorage,
 	}
 }
 
@@ -31,12 +31,12 @@ func (h *ComentariosHandler) ShowComentarios(w http.ResponseWriter, r *http.Requ
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
 		return
 	}
-	servicio, err := h._serviciosRepository.GetServiceById(servicioId)
+	servicio, err := h._serviciosStorage.GetServiceById(servicioId)
 	if err != nil {
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
 		return
 	}
-	comentarios, err := h._comentariosRepository.GetComentariosPorServicioId(int(servicioId))
+	comentarios, err := h._comentariosStorage.GetComentariosPorServicioId(int(servicioId))
 	if err != nil {
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
 		return
@@ -70,15 +70,15 @@ func (h *ComentariosHandler) CreateComentarioHandler(w http.ResponseWriter, r *h
 	}
 	comentario.Comentario = r.FormValue("comentario")
 	comentario.ServicioId = servicioId
-	err = h._comentariosRepository.CreateComentario(&comentario)
+	err = h._comentariosStorage.CreateComentario(&comentario)
 	if err != nil {
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
 		return
 	}
 	utils.WriteResponse(w, http.StatusOK, utils.Response{
-        "message": "Comentario creado exitosamente",
-        "comentario": comentario,
-    })
+		"message":    "Comentario creado exitosamente",
+		"comentario": comentario,
+	})
 	return
 
 }

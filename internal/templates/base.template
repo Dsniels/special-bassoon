@@ -1,14 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>{{ template "title" . }}</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script>
+    function clean() {
+      setTimeout(()=>{
+
+      let result = document.getElementById("resultados")
+      let input = document.getElementById("busqueda");
+      input.value = ''
+      result.innerHTML = ''
+      },200)
+    }
+
+    async function search() {
+      const input = document.getElementById("busqueda");
+      let query = input.value;
+      if (query.trim() === "") {
+        result.innerHTML = ''
+        return
+      }
+
+      let result = document.getElementById("resultados")
+      try {
+        const response = await fetch(`/servicios/search?q=${query}`);
+        const body = await response.json();
+        let html = '';
+        console.log(body.data.length)
+        if (body.data.length <= 0) {
+          html = `
+              <div class="p-2 m-1 text-sm">
+                <p>Sin resultados</p>
+              </div>
+              `
+        } else {
+          body.data.forEach(x => {
+            html += `
+            <div class="p-2 m-1 text-sm"> 
+              <a href="/servicios/${x.ID}">${x.nombre} ${x.direccion}</a>
+            </div>
+            `
+          })
+        }
+        result.innerHTML = html
+      } catch (e) {
+        console.log(e)
+      }
+
+    }
+
+  </script>
   {{ template "scripts" }}
 </head>
 
 <body>
-{{template "navbar" .}}
-{{ template "body" . }}
+  {{template "navbar" .}}
+  {{ template "body" . }}
 </body>
+
 </html>

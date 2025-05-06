@@ -2,26 +2,27 @@
 <nav class="w-full bg-gray-100 py-3 px-6 flex items-center justify-between shadow-sm">
   <div class="flex items-center">
     <div class="flex items-center space-x-2">
+        <a href="/" class="flex items-center">
       <img src="/images/logo.png" alt="Fixable Logo" class="h-10 w-10">
       <div>
-        <a href="/" class="flex items-center">
           <h1 class="text-green-900 font-bold text-2xl leading-tight">Fixable</h1>
-        </a>
         <p class="text-green-900 font-medium">¡BIENVENIDO!</p>
       </div>
+        </a>
     </div>
   </div>
   
   <div class="relative flex items-center w-full max-w-lg mx-6">
-    <div class="absolute left-3 text-gray-400">
+    <div class="absolute left-3 text-gray-400 z-10">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
         <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
       </svg>
     </div>
-    <input type="text" placeholder="¿Qué servicio necesitas?" class="w-full pl-10 pr-4 py-2 rounded-full border-none focus:outline-none">
+    <input onblur="clean()" id="busqueda" oninput="search()" type="text" placeholder="¿Que servicio necesitas?" class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-1 focus:ring-green-500">
+    <div id="resultados" class="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto z-20"></div>
   </div>
   
-  <a href="/promocionate" class="bg-green-900 hover:bg-green-800 text-white text-center text-sm px-3 py-2 rounded-md font-semibold uppercase  whitespace-nowrap">
+  <a href="/promocionate" class="bg-green-900 hover:bg-green-800 text-white text-center text-sm px-3 py-2 rounded-md font-semibold uppercase whitespace-nowrap">
     Promocionate<br>con nosotros
   </a>
 </nav>

@@ -17,7 +17,7 @@ func main() {
 	}
 
 	app.Logger.Printf("Migrando db")
-  data.SeedData(app.Db)
+	data.SeedData(app.Db)
 	routes := router.InitRoutes(app)
 
 	server := &http.Server{

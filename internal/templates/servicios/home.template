@@ -1,5 +1,9 @@
 {{define "title"}}Servicios Disponibles{{end}}
-{{define "scripts"}}{{end}}
+{{define "scripts"}}
+<script>
+
+</script>
+{{end}}
 {{define "body"}}
   {{template "categorias-list" .}}
   
