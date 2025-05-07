@@ -74,8 +74,17 @@ func (h *ServicioHandler) NewServicio(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ServicioHandler) PromocionarseHandler(w http.ResponseWriter, r *http.Request) {
-	file := "internal/templates/promocionarse/promocionarse.template"
-	http.ServeFile(w, r, file)
+	t, err := template.ParseFiles(
+		"internal/templates/base.template",
+		"internal/templates/navbar/navbar.template",
+		"internal/templates/promocionarse/promocionarse.template",
+	)
+  if err!= nil{
+		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
+		return
+
+  }
+  t.Execute(w,nil)
 }
 
 func (h *ServicioHandler) SearchHandler(w http.ResponseWriter, r *http.Request) {

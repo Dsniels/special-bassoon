@@ -1,0 +1,41 @@
+{{define "title"}}Promocionate{{end}}
+
+{{define "scripts"}}
+{{end}}
+
+{{define "body"}}
+  <div class="w-full text-center py-6 bg-gray-100">
+    <h1 class="text-4xl font-bold text-green-900 mb-6">¡Unete a nosotros!</h1>
+  </div>
+
+  <div class="container mx-auto px-4 my-10">
+    <div class="flex justify-center">
+      <div class="max-w-4xl w-full">
+        <!-- Imagen de trabajadores -->
+        <div class="text-center mb-8">
+          <img src="https://elcomprayventa.com/storage/advertisements_images/FGPpI8qpjx4yNkNdkb7DQzEJt0qGt795RBD2zm1h.jpeg" 
+               class="w-full h-auto" 
+               alt="Profesionales de distintos oficios">
+        </div>
+
+        <!-- Texto descriptivo -->
+        <div class="text-center mb-10">
+          <h2 class="text-2xl mb-3">¿Eres carpintero, plomero, electricista, o tienes un oficio que quieres mostrar?</h2>
+          <p class="text-xl mb-4">Este es tu espacio.</p>
+          <p class="text-lg">Conteste el siguiente formulario para formar parte de nuestro equipo</p>
+        </div>
+
+        <div class="text-center mb-10">
+          <a href="/formulario" class="inline-flex items-center bg-green-900 hover:bg-green-800 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            Formulario
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-t border-gray-300 my-10"></div>
+{{end}}
