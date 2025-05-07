@@ -40,7 +40,7 @@ func SeedData(db *gorm.DB) error {
 			}
 		}
 	}
-  db.AutoMigrate(&models.Comentario{})
+	db.AutoMigrate(&models.Comentario{})
 
 	return nil
 

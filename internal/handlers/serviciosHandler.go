@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 
@@ -28,50 +27,6 @@ func NewServiceHandler(
 	}
 }
 
-func (h *ServicioHandler) CreateServicioHandler(w http.ResponseWriter, r *http.Request) {
-	var servicio models.Servicio
-	err := servicio.FromForm(r)
-	if err != nil {
-		fmt.Println("%w", err)
-		utils.WriteResponse(w, http.StatusBadRequest, utils.Response{"error": err})
-		return
-	}
-	err = servicio.Validate()
-	if err != nil {
-		fmt.Println("%w", err)
-		utils.WriteResponse(w, http.StatusBadRequest, utils.Response{"error": err})
-		return
-	}
-	err = h._servicioStorage.CreateService(&servicio)
-	if err != nil {
-		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
-		return
-	}
-	http.Redirect(w, r, "/servicios/all", http.StatusSeeOther)
-}
-
-func (h *ServicioHandler) NewServicio(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles(
-		"internal/templates/base.template",
-		"internal/templates/navbar/navbar.template",
-		"internal/templates/servicios/create.template",
-	)
-	if err != nil {
-		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
-		return
-	}
-	categorias, err := h._categoriaStorage.GetCategorias()
-	if err != nil {
-		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
-		return
-	}
-	data := struct {
-		Options []models.Categoria
-	}{
-		Options: *categorias,
-	}
-	t.Execute(w, data)
-}
 
 func (h *ServicioHandler) PromocionarseHandler(w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles(
@@ -101,25 +56,12 @@ func (h *ServicioHandler) SearchHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	utils.WriteResponse(w, http.StatusOK, utils.Response{"data": servicios})
-	return
 }
 
 func (h *ServicioHandler) GetAllServicios(w http.ResponseWriter, r *http.Request) {
-	services, err := h._servicioStorage.GetServices()
-	if err != nil {
-		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
-		return
-	}
-	comentarios, err := h._comentarioStorage.GetAllComentarios()
-	if err != nil {
-		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
-		return
-	}
-	categorias, err := h._categoriaStorage.GetCategorias()
-	if err != nil {
-		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
-		return
-	}
+	services, _ := h._servicioStorage.GetServices()
+	comentarios, _ := h._comentarioStorage.GetAllComentarios()
+	categorias, _ := h._categoriaStorage.GetCategorias()
 	t, err := template.ParseFiles(
 		"internal/templates/base.template",
 		"internal/templates/navbar/navbar.template",

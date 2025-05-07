@@ -79,6 +79,4 @@ func (h *ComentariosHandler) CreateComentarioHandler(w http.ResponseWriter, r *h
 		"message":    "Comentario creado exitosamente",
 		"comentario": comentario,
 	})
-	return
-
 }
