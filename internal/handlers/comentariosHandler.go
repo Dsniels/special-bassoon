@@ -76,7 +76,6 @@ func (h *ComentariosHandler) CreateComentarioHandler(w http.ResponseWriter, r *h
 		return
 	}
 	utils.WriteResponse(w, http.StatusOK, utils.Response{
-		"message":    "Comentario creado exitosamente",
 		"comentario": comentario,
 	})
 }
