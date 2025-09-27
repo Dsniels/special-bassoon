@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"reflect"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -25,6 +26,7 @@ func WriteResponse(w http.ResponseWriter, statusCode int, data Response) error {
 }
 
 func GetIdFromParams(r *http.Request) (uint, error) {
+
 	param := chi.URLParam(r, "id")
 	if param == "" {
 		return 0, fmt.Errorf("must pass a valid Id")
@@ -34,5 +36,20 @@ func GetIdFromParams(r *http.Request) (uint, error) {
 		return 0, err
 	}
 	return uint(parsed), nil
+
+}
+
+
+func ToStruct[T any]( r *http.Request, s *T){ 
+	val := reflect.ValueOf(s)
+	el := val.Elem()
+	t:= val.Type()
+	for i:= 0; i < t.NumField() ; i++ { 
+		field:= t.Field(i)
+		value := r.FormValue(field.Name)
+		if el.Field(i).CanSet() && el.Field(i).Kind() != reflect.Uint{
+			el.Field(i).SetString(value)
+		}
+	}
 
 }
