@@ -16,7 +16,9 @@ type IServicioStorage interface {
 	GetServiceByCategoriaId(uint) (*[]models.Servicio, error)
 	GetServices() (*[]models.Servicio, error)
 	GetServiceById(uint) (*models.Servicio, error)
+	Delete(*models.Servicio) error
 	GetByQuery(string) (*[]models.Servicio, error)
+	UpdateServicio(servicio *models.Servicio) error 
 }
 
 func NewServicioStorage(db *gorm.DB) *ServicioStorage {
@@ -31,6 +33,15 @@ func (r *ServicioStorage) CreateService(servicio *models.Servicio) error {
 		return result.Error
 	}
 	return nil
+}
+
+func (r *ServicioStorage) Delete(servicio *models.Servicio) error {
+	tx := r.db.Delete(servicio)
+	return tx.Error
+}
+
+func (r *ServicioStorage) UpdateServicio(servicio *models.Servicio) error {
+	return r.db.Save(servicio).Error
 }
 
 func (r *ServicioStorage) GetServiceById(Id uint) (*models.Servicio, error) {
