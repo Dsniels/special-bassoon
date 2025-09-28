@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -36,20 +37,44 @@ func GetIdFromParams(r *http.Request) (uint, error) {
 		return 0, err
 	}
 	return uint(parsed), nil
-
 }
 
+func ToStruct[T any](r *http.Request, g *T) error {
 
-func ToStruct[T any]( r *http.Request, s *T){ 
-	val := reflect.ValueOf(s)
+	val := reflect.ValueOf(g)
 	el := val.Elem()
-	t:= val.Type()
-	for i:= 0; i < t.NumField() ; i++ { 
-		field:= t.Field(i)
+	t := el.Type()
+
+	if val.Kind() != reflect.Pointer {
+		return fmt.Errorf("must pass a pointer to an struct")
+	}
+
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
 		value := r.FormValue(field.Name)
-		if el.Field(i).CanSet() && el.Field(i).Kind() != reflect.Uint{
-			el.Field(i).SetString(value)
+		fieldVal := el.Field(i)
+		if !fieldVal.CanSet() {
+			continue
+		}
+		if err := setField(field, fieldVal, value); err != nil {
+			slog.Error("setting field", slog.Any("message", err))
+			continue
 		}
 	}
 
+	return nil
+}
+
+func setField(field reflect.StructField, fieldElem reflect.Value, value string) error {
+	switch field.Type.Kind() {
+	case reflect.String:
+		fieldElem.SetString(value)
+	case reflect.Uint:
+		num, err := strconv.ParseUint(value, 10, 60)
+		if err != nil {
+			return err
+		}
+		fieldElem.SetUint(num)
+	}
+	return nil
 }
