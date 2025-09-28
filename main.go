@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -15,7 +16,7 @@ func main() {
 		app.Logger.Printf("error newApp: %v", err)
 		panic(err)
 	}
-
+	flag := make(chan struct{})
 	app.Logger.Printf("Migrando db")
 	data.SeedData(app.Db)
 	routes := router.InitRoutes(app)
@@ -27,9 +28,15 @@ func main() {
 		ReadTimeout:  time.Second * 5,
 	}
 
-	err = server.ListenAndServe()
-	if err != nil {
-		panic(err)
-	}
-	app.Logger.Printf("Todo listo")
+	slog.Info("server running", slog.String("URL", "http://localhost:8000"))
+	go func() {
+		err = server.ListenAndServe()
+		if err != nil {
+			panic(err)
+		}
+		flag <- struct{}{}
+	}()
+
+	<-flag
+
 }

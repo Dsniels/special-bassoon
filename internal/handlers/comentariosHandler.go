@@ -14,17 +14,6 @@ type ComentariosHandler struct {
 	_serviciosStorage   storage.IServicioStorage
 }
 
-func NewComentariosHandler(
-	comentariosStorage storage.IComentarioStorage,
-	serviciosStorage storage.IServicioStorage,
-) *ComentariosHandler {
-
-	return &ComentariosHandler{
-		_comentariosStorage: comentariosStorage,
-		_serviciosStorage:   serviciosStorage,
-	}
-}
-
 func (h *ComentariosHandler) ShowComentarios(w http.ResponseWriter, r *http.Request) {
 	servicioId, err := utils.GetIdFromParams(r)
 	if err != nil {
@@ -50,10 +39,10 @@ func (h *ComentariosHandler) ShowComentarios(w http.ResponseWriter, r *http.Requ
 		Servicio:    servicio,
 	}
 
-	t, err := template.ParseFiles(
-		"internal/templates/base.template",
-		"internal/templates/navbar/navbar.template",
-		"internal/templates/comentarios/comentarios-list.template")
+	t, err := template.ParseFS(TemplatesFS,
+		"templates/base.templ",
+		"templates/navbar/navbar.templ",
+		"templates/comentarios/comentarios-list.templ")
 	if err != nil {
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
 		return
@@ -78,4 +67,15 @@ func (h *ComentariosHandler) CreateComentarioHandler(w http.ResponseWriter, r *h
 	utils.WriteResponse(w, http.StatusOK, utils.Response{
 		"comentario": comentario,
 	})
+}
+
+func NewComentariosHandler(
+	comentariosStorage storage.IComentarioStorage,
+	serviciosStorage storage.IServicioStorage,
+) *ComentariosHandler {
+
+	return &ComentariosHandler{
+		_comentariosStorage: comentariosStorage,
+		_serviciosStorage:   serviciosStorage,
+	}
 }

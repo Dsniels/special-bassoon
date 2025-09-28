@@ -16,6 +16,9 @@ func InitRoutes(app *app.App) *chi.Mux {
 	router.Route("/servicios", func(r chi.Router) {
 		r.Get("/search", app.ServicioHandler.SearchHandler)
 		r.Get("/{id}", app.ServicioHandler.GetServicioById)
+		r.Post("/create", app.ServicioHandler.CreateServicio)
+		r.Get("/create/{id}", app.ServicioHandler.CreateForm)
+		r.Post("/delete/{id}", app.ServicioHandler.DeleteServicio)
 	})
 	router.Route("/categoria", func(r chi.Router) {
 		r.Get("/{id}", app.CategoriaHandler.ServiciosByCategoriaHandler)

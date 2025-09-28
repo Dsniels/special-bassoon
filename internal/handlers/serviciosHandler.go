@@ -1,7 +1,10 @@
 package handler
 
 import (
+	"embed"
+	"fmt"
 	"html/template"
+	"log/slog"
 	"net/http"
 
 	"fixable.com/fixable/internal/models"
@@ -9,37 +12,29 @@ import (
 	"fixable.com/fixable/internal/utils"
 )
 
+// templates
+//
+//go:embed templates/*
+var TemplatesFS embed.FS
+
 type ServicioHandler struct {
 	_servicioStorage   storage.IServicioStorage
 	_categoriaStorage  storage.ICategoriaStorage
 	_comentarioStorage storage.IComentarioStorage
 }
 
-func NewServiceHandler(
-	serviciosRepositorio storage.IServicioStorage,
-	comentarioStorage storage.IComentarioStorage,
-	categoriaStorage storage.ICategoriaStorage,
-) *ServicioHandler {
-	return &ServicioHandler{
-		_categoriaStorage:  categoriaStorage,
-		_comentarioStorage: comentarioStorage,
-		_servicioStorage:   serviciosRepositorio,
-	}
-}
-
-
 func (h *ServicioHandler) PromocionarseHandler(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles(
-		"internal/templates/base.template",
-		"internal/templates/navbar/navbar.template",
-		"internal/templates/promocionarse/promocionarse.template",
+	t, err := template.ParseFS(TemplatesFS,
+		"templates/base.templ",
+		"templates/navbar/navbar.templ",
+		"templates/promocionarse/promocionarse.templ",
 	)
-  if err!= nil{
+	if err != nil {
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
 		return
 
-  }
-  t.Execute(w,nil)
+	}
+	t.Execute(w, nil)
 }
 
 func (h *ServicioHandler) SearchHandler(w http.ResponseWriter, r *http.Request) {
@@ -62,11 +57,11 @@ func (h *ServicioHandler) GetAllServicios(w http.ResponseWriter, r *http.Request
 	services, _ := h._servicioStorage.GetServices()
 	comentarios, _ := h._comentarioStorage.GetAllComentarios()
 	categorias, _ := h._categoriaStorage.GetCategorias()
-	t, err := template.ParseFiles(
-		"internal/templates/base.template",
-		"internal/templates/navbar/navbar.template",
-		"internal/templates/servicios/home.template",
-		"internal/templates/categorias/list.template",
+	t, err := template.ParseFS(TemplatesFS,
+		"templates/base.templ",
+		"templates/navbar/navbar.templ",
+		"templates/servicios/home.templ",
+		"templates/categorias/list.templ",
 	)
 
 	if err != nil {
@@ -100,10 +95,10 @@ func (h *ServicioHandler) GetServicioById(w http.ResponseWriter, r *http.Request
 		utils.WriteResponse(w, http.StatusBadRequest, utils.Response{"error": err})
 		return
 	}
-	t, err := template.ParseFiles(
-		"internal/templates/base.template",
-		"internal/templates/navbar/navbar.template",
-		"internal/templates/servicios/servicio.template",
+	t, err := template.ParseFS(TemplatesFS,
+		"templates/base.templ",
+		"templates/navbar/navbar.templ",
+		"templates/servicios/servicio.templ",
 	)
 	if err != nil {
 		panic(err)
@@ -116,5 +111,99 @@ func (h *ServicioHandler) GetServicioById(w http.ResponseWriter, r *http.Request
 	err = t.Execute(w, data)
 	if err != nil {
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
+	}
+}
+
+func (h *ServicioHandler) CreateServicio(w http.ResponseWriter, r *http.Request) {
+	servicio := new(models.Servicio)
+	utils.ToStruct(r, servicio)
+	if urlId, err := utils.GetIdFromParams(r); err == nil {
+		servicio.ID = urlId
+	}
+	var err error
+	if servicio.ID == 0 {
+		err = h._servicioStorage.CreateService(servicio)
+		if err != nil {
+			utils.WriteResponse(w, http.StatusBadRequest, utils.Response{"error": err.Error()})
+			return
+		}
+	} else {
+		_, err = h._servicioStorage.GetServiceById(servicio.ID)
+		if err != nil {
+			utils.WriteResponse(w, http.StatusNotFound, utils.Response{"error": "Servicio no encontrado"})
+			return
+		}
+
+		err = h._servicioStorage.UpdateServicio(servicio)
+		if err != nil {
+			utils.WriteResponse(w, http.StatusBadRequest, utils.Response{"error": err.Error()})
+			return
+		}
+	}
+	// utils.WriteResponse(w, http.StatusOK, utils.Response{"data": servicio})
+	http.Redirect(w, r, fmt.Sprintf("/servicios/%v", servicio.ID), http.StatusSeeOther)
+}
+
+func (h *ServicioHandler) CreateForm(w http.ResponseWriter, r *http.Request) {
+	id, _ := utils.GetIdFromParams(r)
+	var servicio *models.Servicio
+	if id != 0 {
+		servicio, _ = h._servicioStorage.GetServiceById(id)
+	}
+	if servicio == nil {
+		servicio = new(models.Servicio)
+	}
+	t, err := template.ParseFS(TemplatesFS,
+		"templates/base.templ",
+		"templates/navbar/navbar.templ",
+		"templates/servicios/create.templ",
+	)
+	if err != nil {
+		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
+	}
+	categorias, err := h._categoriaStorage.GetCategorias()
+	if err != nil {
+		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
+	}
+	data := struct {
+		Servicio   *models.Servicio
+		Categorias *[]models.Categoria
+	}{
+		Servicio:   servicio,
+		Categorias: categorias,
+	}
+
+	err = t.Execute(w, data)
+	if err != nil {
+		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
+	}
+
+}
+
+func (h *ServicioHandler) DeleteServicio(w http.ResponseWriter, r *http.Request) {
+	id, _ := utils.GetIdFromParams(r)
+
+	slog.Info("Delete servicio", slog.Any("id", id))
+	servicio, err := h._servicioStorage.GetServiceById(id)
+	if err != nil {
+		utils.WriteResponse(w, 404, utils.Response{"error": err})
+		return
+	}
+	err = h._servicioStorage.Delete(servicio)
+	if err != nil {
+		utils.WriteResponse(w, 400, utils.Response{"error": err})
+		return
+	}
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+func NewServiceHandler(
+	serviciosRepositorio storage.IServicioStorage,
+	comentarioStorage storage.IComentarioStorage,
+	categoriaStorage storage.ICategoriaStorage,
+) *ServicioHandler {
+	return &ServicioHandler{
+		_categoriaStorage:  categoriaStorage,
+		_comentarioStorage: comentarioStorage,
+		_servicioStorage:   serviciosRepositorio,
 	}
 }

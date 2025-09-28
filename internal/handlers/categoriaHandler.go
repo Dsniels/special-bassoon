@@ -22,7 +22,6 @@ func NewCategoriaHandler(categoriaStorage storage.ICategoriaStorage, serviciosSt
 	}
 }
 
-
 func (h *CategoriaHandler) ServiciosByCategoriaHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetIdFromParams(r)
 	if err != nil {
@@ -42,10 +41,10 @@ func (h *CategoriaHandler) ServiciosByCategoriaHandler(w http.ResponseWriter, r 
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
 		return
 	}
-	t, err := template.ParseFiles(
-		"internal/templates/base.template",
-		"internal/templates/navbar/navbar.template",
-		"internal/templates/categorias/servicios-list.template")
+	t, err := template.ParseFS(TemplatesFS,
+		"templates/base.templ",
+		"templates/navbar/navbar.templ",
+		"templates/categorias/servicios-list.templ")
 	if err != nil {
 		fmt.Println("%w", err)
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
