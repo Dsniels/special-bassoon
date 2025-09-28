@@ -1,8 +1,6 @@
 package models
 
-import "gorm.io/gorm"
-
 type Categoria struct {
-  gorm.Model
-  Nombre string `json:"nombre"`
+	ID     uint   `gorm:"primarykey"`
+	Nombre string `json:"nombre"`
 }

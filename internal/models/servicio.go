@@ -1,11 +1,7 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 type Servicio struct {
-	gorm.Model
+	ID          uint   `gorm:"primarykey"`
 	Nombre      string `json:"nombre"`
 	Direccion   string `json:"direccion"`
 	Email       string `json:"email"`
