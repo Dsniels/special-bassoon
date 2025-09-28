@@ -18,7 +18,7 @@ type IServicioStorage interface {
 	GetServiceById(uint) (*models.Servicio, error)
 	Delete(*models.Servicio) error
 	GetByQuery(string) (*[]models.Servicio, error)
-	UpdateServicio(servicio *models.Servicio) error 
+	UpdateServicio(servicio *models.Servicio) error
 }
 
 func NewServicioStorage(db *gorm.DB) *ServicioStorage {
@@ -45,7 +45,7 @@ func (r *ServicioStorage) UpdateServicio(servicio *models.Servicio) error {
 }
 
 func (r *ServicioStorage) GetServiceById(Id uint) (*models.Servicio, error) {
-	var servicio = models.Servicio{Model: gorm.Model{ID: Id}}
+	var servicio = models.Servicio{ID: Id}
 	r.db.First(&servicio)
 	return &servicio, nil
 

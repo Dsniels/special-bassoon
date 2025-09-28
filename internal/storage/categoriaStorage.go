@@ -1,4 +1,4 @@
-package storage 
+package storage
 
 import (
 	"fixable.com/fixable/internal/models"
@@ -10,6 +10,7 @@ type CategoriaStorage struct {
 }
 
 type ICategoriaStorage interface {
+	DeleteCategoria(categoria *models.Categoria) error
 	GetCategorias() (*[]models.Categoria, error)
 	GetCategoriaById(uint) (*models.Categoria, error)
 	Create(models.Categoria) error
@@ -45,4 +46,8 @@ func (repo *CategoriaStorage) GetCategorias() (*[]models.Categoria, error) {
 		return nil, result.Error
 	}
 	return &categoria, nil
+}
+
+func (repo *CategoriaStorage) DeleteCategoria(categoria *models.Categoria) error {
+	return repo.db.Delete(categoria).Error
 }

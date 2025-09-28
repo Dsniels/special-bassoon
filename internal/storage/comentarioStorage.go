@@ -13,6 +13,7 @@ type IComentarioStorage interface {
 	CreateComentario(*models.Comentario) error
 	GetAllComentarios() (*[]models.Comentario, error)
 	GetComentariosPorServicioId(servicioId int) (*[]models.Comentario, error)
+	DeleteComentario(comentario *models.Comentario) error
 }
 
 func NewComentarioStorage(db *gorm.DB) *ComentarioStorage {
@@ -27,6 +28,10 @@ func (repo *ComentarioStorage) CreateComentario(comentario *models.Comentario) e
 		return result.Error
 	}
 	return nil
+}
+
+func (repo *ComentarioStorage) DeleteComentario(comentario *models.Comentario) error {
+	return repo.db.Delete(comentario).Error
 }
 
 func (repo *ComentarioStorage) GetComentariosPorServicioId(servicioId int) (*[]models.Comentario, error) {
