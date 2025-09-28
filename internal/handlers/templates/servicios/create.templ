@@ -1,30 +1,41 @@
 {{define "title"}}Create new servicio{{end}}
 {{define "scripts"}}
-<script src="https://cdn.tiny.cloud/1/8bqe57xlyiklvz0b2ro3fesxilb3ue7o0s87zddmdv1mw01d/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
+<script src="https://cdn.tiny.cloud/1/8bqe57xlyiklvz0b2ro3fesxilb3ue7o0s87zddmdv1mw01d/tinymce/7/tinymce.min.js" // //
+  referrerpolicy="origin"></script>
+
 
 <script>
-  tinymce.init({
-    selector: 'textarea',
-    plugins: [
-      'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
-      'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate',  'mentions', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown'
-    ],
-    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-    menubar:''     });
+
+
 </script>
 {{end}}
 {{define "body"}}
-<form method="post" action="/servicios/create">
-    <input id="nombre" type="text" name="nombre" placeholder="nombre">
-    <input id="direccion" type="text" name="direccion" placeholder="direccion">
-    <input id="numero" type="numero" name="telefono" placeholder="telefono">
-    <textarea id="textarea" name="contenido"></textarea>
-     <select id="categoria" name="categoria" > 
-          {{range .Options}} 
-            <option value="{{.ID}}">{{.Nombre}}</option>
-          {{end}}
+<div class="md:col-span-1">
+  <div class="sticky top-4 bg-gray-50 rounded-lg p-6">
+    <form id="formcreate" method="post" class="space-y-4" action="/servicios/create">
+      <input class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500" id="id"
+        type="text" name="ID" hidden value="{{.Servicio.ID}}">
+      <input class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500" id="nombre"
+        type="text" name="Nombre" placeholder="nombre" value="{{.Servicio.Nombre}}">
+      <input class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
+        id="direccion" type="text" name="Direccion" placeholder="direccion" value="{{.Servicio.Direccion}}">
+      <input class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500" id="numero"
+        type="numero" name="Telefono" placeholder="telefono" value="{{.Servicio.Telefono}}">
+      <input class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500" id="Image"
+        name="Imagen" placeholder="Imagen" value="{{.Servicio.Imagen}}">
+      <textarea class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
+        id="textarea" name="Descripcion" value="{{.Servicio.Descripcion}}"></textarea>
+      <select class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
+        id="categoria" name="CategoriaId">
+        {{range .Categorias}}
+        <option value="{{.ID}}" {{if eq .ID $.Servicio.CategoriaId }} selected {{end}}>{{.Nombre}}</option>
+        {{end}}
       </select>
 
-    <button id="submit" type="submit">Create</button>
-</form>
+      <button class="bg-green-900 text-white px-6 py-2 rounded-lg hover:bg-green-800 transition-colors" id="submit"
+        type="submit">Guardar</button>
+    </form>
+  </div>
+</div>
 {{end}}
