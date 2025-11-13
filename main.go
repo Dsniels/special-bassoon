@@ -8,16 +8,18 @@ import (
 	"fixable.com/fixable/internal/app"
 	"fixable.com/fixable/internal/data"
 	"fixable.com/fixable/internal/router"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	
+	godotenv.Load() 
 	app, err := app.NewApp()
 	if err != nil {
-		app.Logger.Printf("error newApp: %v", err)
 		panic(err)
 	}
 	flag := make(chan struct{})
-	app.Logger.Printf("Migrando db")
+	
 	data.SeedData(app.Db)
 	routes := router.InitRoutes(app)
 
@@ -28,7 +30,7 @@ func main() {
 		ReadTimeout:  time.Second * 5,
 	}
 
-	slog.Info("server running", slog.String("URL", "http://localhost:8000"))
+	slog.Info("server running", slog.String("page", "http://localhost:8000"), slog.String("admin page", "http://localhost:8000/admin/servicios"))
 	go func() {
 		err = server.ListenAndServe()
 		if err != nil {

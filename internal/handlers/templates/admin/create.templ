@@ -1,19 +1,19 @@
 {{define "title"}}Create new servicio{{end}}
 {{define "scripts"}}
-
-<script src="https://cdn.tiny.cloud/1/8bqe57xlyiklvz0b2ro3fesxilb3ue7o0s87zddmdv1mw01d/tinymce/7/tinymce.min.js" // //
-  referrerpolicy="origin"></script>
-
-
 <script>
-
-
+  document.onload(() => {
+    document.getElementById("formcreate").addEventListener("submit", function (e) {
+      const submitButton = document.getElementById("submit");
+      submitButton.disabled = true;
+    });
+  })
 </script>
+
 {{end}}
 {{define "body"}}
 <div class="md:col-span-1">
   <div class="sticky top-4 bg-gray-50 rounded-lg p-6">
-    <form id="formcreate" method="post" class="space-y-4" action="/servicios/create">
+    <form enctype="multipart/form-data" id="formcreate" method="post" class="space-y-4" action="/servicios/create">
       <input class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500" id="id"
         type="text" name="ID" hidden value="{{.Servicio.ID}}">
       <input class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500" id="nombre"
@@ -23,9 +23,9 @@
       <input class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500" id="numero"
         type="numero" name="Telefono" placeholder="telefono" value="{{.Servicio.Telefono}}">
       <input class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500" id="Image"
-        name="Imagen" placeholder="Imagen" value="{{.Servicio.Imagen}}">
+        name="file" placeholder="file" type="file" {{if eq .Servicio.Imagen "" }} required {{end}}>
       <textarea class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-        id="textarea" name="Descripcion" value="{{.Servicio.Descripcion}}"></textarea>
+        id="textarea" placeholder="Descripcion" name="Descripcion">{{.Servicio.Descripcion}}</textarea>
       <select class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
         id="categoria" name="CategoriaId">
         {{range .Categorias}}

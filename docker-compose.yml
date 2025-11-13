@@ -16,7 +16,7 @@ services:
       - go-network
       
   server:
-    image: danielszr/go-project
+    build: .
     ports:
       - "8000:8000"
     depends_on:

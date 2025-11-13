@@ -2,6 +2,7 @@ package data
 
 import (
 	"errors"
+	"log/slog"
 
 	"fixable.com/fixable/internal/models"
 	"gorm.io/gorm"
@@ -34,6 +35,7 @@ func SeedData(db *gorm.DB) error {
 
 	if err := db.AutoMigrate(&models.Servicio{}); err == nil && db.Migrator().HasTable(&models.Servicio{}) {
 		if err := db.First(&models.Servicio{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+			slog.Info("Seeding database")
 			result := db.Create(&servicios)
 			if result.Error != nil {
 				return result.Error
