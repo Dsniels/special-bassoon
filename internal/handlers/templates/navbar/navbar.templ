@@ -1,5 +1,5 @@
 {{define "navbar"}}
-<nav class="w-full bg-gray-100 py-3 px-6 flex items-center shadow-sm">
+<nav class="w-full bg-gray-100 py-3 px-6 flex items-center justify-between shadow-sm">
   <div class="flex items-center">
     <div class="flex items-center space-x-2">
       <a href="/" class="flex items-center">
@@ -12,7 +12,7 @@
     </div>
   </div>
 
-  <div class="relative flex items-center w-full max-w-lg  ml-20">
+  <div class="relative flex items-center w-full max-w-lg mx-6">
     <div class="absolute left-3 text-gray-400 z-10">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
         <path fill-rule="evenodd"
@@ -24,6 +24,12 @@
       class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-1 focus:ring-green-500">
     <div id="resultados"
       class="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto z-20"></div>
+  </div>
+  <div class="m-4">
+    <a href="https://forms.gle/ux6dJEKwgezYeWJ87"
+      class="inline-block bg-green-900 text-white font-semibold px-8 py-3 rounded-lg hover:bg-green-800 transition-colors">
+      Promocionate
+    </a>
   </div>
 </nav>
 {{end}}

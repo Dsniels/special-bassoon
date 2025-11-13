@@ -12,25 +12,25 @@ import (
 )
 
 func main() {
-	
-	godotenv.Load() 
+
+	godotenv.Load()
 	app, err := app.NewApp()
 	if err != nil {
 		panic(err)
 	}
 	flag := make(chan struct{})
-	
+
 	data.SeedData(app.Db)
 	routes := router.InitRoutes(app)
 
 	server := &http.Server{
-		Addr:         ":8000",
+		Addr:         ":80",
 		Handler:      routes,
 		WriteTimeout: time.Second * 5,
 		ReadTimeout:  time.Second * 5,
 	}
 
-	slog.Info("server running", slog.String("page", "http://localhost:8000"), slog.String("admin page", "http://localhost:8000/admin/servicios"))
+	slog.Info("server running", slog.String("page", "http://localhost:80"), slog.String("admin page", "http://localhost:80/admin/servicios"))
 	go func() {
 		err = server.ListenAndServe()
 		if err != nil {

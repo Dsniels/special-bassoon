@@ -11,7 +11,7 @@ COPY . .
 
 RUN go build -o go-project
 
-EXPOSE 8000
+EXPOSE 80
 
 CMD ["/build/go-project"]
 
