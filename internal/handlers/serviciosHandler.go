@@ -155,7 +155,7 @@ func (h *ServicioHandler) CreateServicio(w http.ResponseWriter, r *http.Request)
 	}
 	if file != nil {
 		defer file.Close()
-		headers.Filename = strings.ReplaceAll(headers.Filename," ","") 
+		headers.Filename = strings.ReplaceAll(headers.Filename, " ", "")
 		imageExtension := path.Ext(headers.Filename)
 		url, err := h._blobStorage.UploadImage(r.Context(), file, headers.Filename, fmt.Sprintf("image/%s", imageExtension))
 		if err != nil {
@@ -165,6 +165,7 @@ func (h *ServicioHandler) CreateServicio(w http.ResponseWriter, r *http.Request)
 		imageUrl = url
 	}
 	if servicio.ID == 0 {
+		servicio.Imagen = imageUrl
 		err = h._servicioStorage.CreateService(servicio)
 		if err != nil {
 			utils.WriteResponse(w, http.StatusBadRequest, utils.Response{"error": err.Error()})
