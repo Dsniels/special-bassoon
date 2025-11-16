@@ -79,7 +79,7 @@ func (r *ServicioStorage) GetByQuery(query string) (*[]models.Servicio, error) {
 
 func (r *ServicioStorage) GetServices() (*[]models.Servicio, error) {
 	var servicios []models.Servicio
-	result := r.db.Find(&servicios)
+	result := r.db.Order("NEWID()").Find(&servicios)
 	if result.Error != nil {
 		return nil, result.Error
 	}

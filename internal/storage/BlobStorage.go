@@ -41,15 +41,6 @@ func (b *BlobStorage) UploadImage(ctx context.Context, image io.Reader, filename
 	return url, nil
 }
 
-func (b *BlobStorage) getContainer() (*container.Client, error) {
-
-	if err := b.ensureContainer(); err != nil {
-		return nil, err
-	}
-	client := b.ServiceClient().NewContainerClient(b.ContainerName)
-	return client, nil
-}
-
 func (b *BlobStorage) ensureContainer() error {
 	_, err := b.CreateContainer(context.TODO(), b.ContainerName, &azblob.CreateContainerOptions{})
 	if err != nil {
