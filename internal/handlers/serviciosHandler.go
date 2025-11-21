@@ -189,7 +189,7 @@ func (h *ServicioHandler) CreateServicio(w http.ResponseWriter, r *http.Request)
 		}
 	}
 	slog.Info("CreateServicioHandler Done!")
-	http.Redirect(w, r, fmt.Sprintf("/admin/servicios"), http.StatusSeeOther)
+	http.Redirect(w, r, "/admin/servicios", http.StatusSeeOther)
 }
 
 func (h *ServicioHandler) CreateForm(w http.ResponseWriter, r *http.Request) {
