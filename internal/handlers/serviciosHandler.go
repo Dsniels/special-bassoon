@@ -33,9 +33,12 @@ func (h *ServicioHandler) PromocionarseHandler(w http.ResponseWriter, r *http.Re
 	if err != nil {
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
 		return
-
 	}
-	t.Execute(w, nil)
+	isAdmin := strings.Contains(r.URL.Path, "/admin/")
+	data := struct{
+		IsAdmin bool
+	}{IsAdmin: isAdmin}
+	t.Execute(w, data)
 }
 
 func (h *ServicioHandler) SearchHandler(w http.ResponseWriter, r *http.Request) {
@@ -69,14 +72,17 @@ func (h *ServicioHandler) GetAllServicios(w http.ResponseWriter, r *http.Request
 		panic(err)
 	}
 
+	isAdmin := strings.Contains(r.URL.Path, "/admin/")
 	data := struct {
 		Servicios   []models.Servicio
 		Categorias  []models.Categoria
 		Comentarios []models.Comentario
+		IsAdmin     bool
 	}{
 		Comentarios: *comentarios,
 		Servicios:   *services,
 		Categorias:  *categorias,
+		IsAdmin:     isAdmin,
 	}
 
 	err = t.Execute(w, data)
@@ -98,14 +104,17 @@ func (h *ServicioHandler) GetAdminAllServicios(w http.ResponseWriter, r *http.Re
 		panic(err)
 	}
 
+	// this is the admin view
 	data := struct {
 		Servicios   []models.Servicio
 		Categorias  []models.Categoria
 		Comentarios []models.Comentario
+		IsAdmin     bool
 	}{
 		Comentarios: *comentarios,
 		Servicios:   *services,
 		Categorias:  *categorias,
+		IsAdmin:     true,
 	}
 	err = t.Execute(w, data)
 	if err != nil {
@@ -133,10 +142,13 @@ func (h *ServicioHandler) GetServicioById(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		panic(err)
 	}
+	isAdmin := strings.Contains(r.URL.Path, "/admin/")
 	data := struct {
 		Servicio models.Servicio
+		IsAdmin  bool
 	}{
 		Servicio: *servicio,
+		IsAdmin:  isAdmin,
 	}
 	err = t.Execute(w, data)
 	if err != nil {
@@ -213,12 +225,15 @@ func (h *ServicioHandler) CreateForm(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"message": err})
 	}
+	isAdmin := strings.Contains(r.URL.Path, "/admin/")
 	data := struct {
 		Servicio   *models.Servicio
 		Categorias *[]models.Categoria
+		IsAdmin    bool
 	}{
 		Servicio:   servicio,
 		Categorias: categorias,
+		IsAdmin:    isAdmin,
 	}
 
 	err = t.Execute(w, data)
