@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <title>{{ template "title" . }}</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png">
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="icon" href="/images/logo.png" type="image/png" sizes="32x32">
+  <script src="https://cdn.tailwindcss.com"></script>
   <script>
     function clean() {
       setTimeout(()=>{
@@ -58,6 +58,160 @@
 <body>
   {{template "navbar" .}}
   {{ template "body" . }}
+  <!-- Footer: misión, quiénes somos, cómo empezar -->
+  <footer class="bg-green-800 text-gray-200 mt-12 hover:bg-green-800">
+    <div class="container mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div>
+        <h4 id="h4-intercambio" class="text-lg font-semibold text-white cursor-pointer hover:bg-white hover:text-green-900" onclick="openIntercambio()">🔄 Intercambia • Reutiliza • Reduce</h4>
+
+        <!-- Modal: explicación de Intercambia • Reutiliza • Reduce (inline modal, no auto-open) -->
+        <div id="intercambioModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" onclick="if(event.target===this) closeIntercambio()">
+          <div class="bg-white text-gray-900 max-w-4xl w-full mx-4 rounded-lg overflow-hidden shadow-lg">
+            <div class="flex justify-between items-center px-4 py-3 border-b">
+              <h3 class="text-lg font-semibold">🔄 Intercambia • Reutiliza • Reduce</h3>
+              <button onclick="closeIntercambio()" class="text-gray-600 hover:text-gray-900 px-2 py-1">Cerrar ✕</button>
+            </div>
+
+            <div class="flex flex-col md:flex-row p-4 gap-4">
+              <div class="flex-shrink-0">
+                <img src="/images/intercambio.png" alt="Intercambio" class="w-40 h-40 object-cover rounded" />
+              </div>
+
+              <div class="flex-1">
+                <p class="text-sm">
+                  Esta plataforma promueve la economía circular, dando una segunda vida a objetos de calidad para reducir residuos y el impacto ambiental.
+                  Aquí explicamos por qué es importante intercambiar, reutilizar y reducir, cómo hacerlo de forma segura y los beneficios para la comunidad y el planeta.
+                </p>
+
+                <ul class="mt-3 list-disc list-inside text-sm space-y-1">
+                  <li><strong>Intercambia:</strong> conecta con gente local para trueques seguros.</li>
+                  <li><strong>Reutiliza:</strong> da una segunda vida a objetos funcionales.</li>
+                  <li><strong>Reduce:</strong> evita compras innecesarias y minimiza residuos.</li>
+                </ul>
+
+                <div class="mt-4 flex flex-wrap gap-3">
+                  <a href="/terminos" class="text-green-700 hover:underline">Términos</a>
+                  <a href="/privacidad" class="text-green-700 hover:underline">Privacidad</a>
+                  <a href="/contacto" class="text-green-700 hover:underline">Contacto</a>
+
+                  {{/* mostrar enlace según rol */}}
+                  {{if .IsAdmin}}
+                    <a href="/admin" class="text-green-700 hover:underline">Panel Admin</a>
+                  {{else}}
+                    <a href="/dashboard" class="text-green-700 hover:underline">Mi cuenta</a>
+                  {{end}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          function openIntercambio(){
+            document.getElementById('intercambioModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+          }
+          function closeIntercambio(){
+            document.getElementById('intercambioModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+          }
+        </script>
+        <p class="mt-2 text-sm">Esta plataforma promueve la economía circular, dando una segunda vida a objetos de calidad para reducir residuos y el impacto ambiental.</p>
+      </div>
+
+      <div>
+        <h4 id="h4-quienes" class="text-lg font-semibold text-white cursor-pointer hover:bg-white hover:text-green-900" onclick="openQuienes()">💚 Quiénes Somos</h4>
+        <p class="mt-2 text-sm">Somos una comunidad comprometida con el consumo responsable: facilitamos intercambios seguros y locales para extender la vida útil de los productos.</p>
+
+        <!-- Modal Quiénes Somos (full-screen style) -->
+        <div id="quienesModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden" onclick="if(event.target===this) closeQuienes()">
+          <div class="bg-green-800 text-white max-w-5xl w-full mx-4 h-full md:h-auto md:my-12 rounded-lg overflow-auto shadow-2xl">
+            <div class="flex justify-between items-center px-4 py-3 border-b border-green-700">
+              <h3 class="text-xl font-semibold">💚 Quiénes Somos</h3>
+              <button onclick="closeQuienes()" class="text-white hover:text-gray-200 px-3 py-1">Cerrar ✕</button>
+            </div>
+            <div class="flex flex-col md:flex-row p-6 gap-6">
+              <div class="flex-1">
+                <p class="text-sm">Somos una red de personas comprometidas con la revalorización de productos. Facilitamos intercambios locales y seguros para extender la vida útil de objetos y reducir el impacto ambiental.</p>
+                <p class="mt-3 text-sm">Únete a nuestra comunidad para compartir, intercambiar y aprender prácticas de consumo responsable.</p>
+              </div>
+              <div class="flex-shrink-0 md:pl-6 md:border-l md:border-gray-100 flex items-center justify-center">
+                <img src="/images/logo.png" alt="Logo" class="w-48 h-48 object-contain" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          function openQuienes(){
+            document.getElementById('quienesModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+          }
+          function closeQuienes(){
+            document.getElementById('quienesModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+          }
+        </script>
+      </div>
+
+      <div>
+        <h4 id="h4-como" class="text-lg font-semibold text-white cursor-pointer hover:bg-white hover:text-green-900" onclick="openComo()">🚀 ¿Cómo empezar?</h4>
+        <ol class="mt-2 text-sm list-decimal list-inside space-y-1">
+          <li><strong>Sube tu producto:</strong> completa el formulario con fotos claras.</li>
+          <li><strong>Busca:</strong> explora categorías o usa la búsqueda.</li>
+          <li><strong>Conecta:</strong> contacta al anunciante y coordina el trueque.</li>
+        </ol>
+
+        <!-- Modal Cómo empezar -->
+          <div id="comoModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden" onclick="if(event.target===this) closeComo()">
+            <div class="bg-white text-gray-900 max-w-5xl w-full mx-4 h-full md:h-auto md:my-12 rounded-lg overflow-auto shadow-2xl">
+              <div class="flex justify-between items-center px-4 py-3 border-b">
+                <h3 class="text-xl font-semibold">🚀 Cómo empezar</h3>
+                <button onclick="closeComo()" class="text-gray-600 hover:text-gray-900 px-3 py-1">Cerrar ✕</button>
+              </div>
+              <div class="p-6">
+                <ol class="list-decimal list-inside text-sm space-y-3">
+                  <li>Crea una cuenta y completa tu perfil.</li>
+                  <li>Publica lo que quieras intercambiar o regalar.</li>
+                  <li>Chatea con interesados y coordina la entrega.</li>
+                  <li>Califica y recibe feedback para generar confianza.</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          <script>
+            function openComo(){
+              document.getElementById('comoModal').classList.remove('hidden');
+              document.body.style.overflow = 'hidden';
+            }
+            function closeComo(){
+              document.getElementById('comoModal').classList.add('hidden');
+              document.body.style.overflow = 'auto';
+            }
+          </script>
+        <script>
+          function openComo(){
+            document.getElementById('comoModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+          }
+          function closeComo(){
+            document.getElementById('comoModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+          }
+        </script>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-800">
+      <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+        <div>© 2025 Comunidad 0 Waste — Todos los derechos reservados</div>
+        <div class="space-x-4 mt-2 md:mt-0">
+          <a href="/terminos" class="hover:text-white">Términos</a>
+          <a href="/privacidad" class="hover:text-white">Privacidad</a>
+          <a href="/contacto" class="hover:text-white">Contacto</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 </body>
 
 </html>
