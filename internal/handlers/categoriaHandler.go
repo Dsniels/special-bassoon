@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strings"
 
 	"fixable.com/fixable/internal/models"
 	"fixable.com/fixable/internal/storage"
@@ -50,12 +51,15 @@ func (h *CategoriaHandler) ServiciosByCategoriaHandler(w http.ResponseWriter, r 
 		utils.WriteResponse(w, http.StatusInternalServerError, utils.Response{"error": err})
 		return
 	}
+	isAdmin := strings.Contains(r.URL.Path, "/admin/")
 	data := struct {
 		Categoria string
 		Servicios []models.Servicio
+		IsAdmin   bool
 	}{
 		Categoria: categoria.Nombre,
 		Servicios: *servicios,
+		IsAdmin:   isAdmin,
 	}
 	t.Execute(w, data)
 }

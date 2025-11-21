@@ -3,6 +3,7 @@ package handler
 import (
 	"html/template"
 	"net/http"
+	"strings"
 
 	"fixable.com/fixable/internal/models"
 	"fixable.com/fixable/internal/storage"
@@ -31,12 +32,15 @@ func (h *ComentariosHandler) ShowComentarios(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
+	isAdmin := strings.Contains(r.URL.Path, "/admin/")
 	data := struct {
 		Comentarios []models.Comentario
 		Servicio    *models.Servicio
+		IsAdmin     bool
 	}{
 		Comentarios: *comentarios,
 		Servicio:    servicio,
+		IsAdmin:     isAdmin,
 	}
 
 	t, err := template.ParseFS(TemplatesFS,
